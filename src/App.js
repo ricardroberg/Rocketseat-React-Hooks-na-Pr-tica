@@ -1,53 +1,23 @@
 import { useState, useEffect } from "react";
 
 function App() {
-  const [repositories, setRepositories] = useState([]);
+  const [location, setLocation] = useState({});
 
   useEffect(() => {
-    const fetchData = async () => {
-      const response = await fetch(
-        "https://api.github.com/users/ricardroberg/repos"
-      );
-      const data = await response.json();
-      setRepositories(data);
-    };
-    fetchData();
+    navigator.geolocation.watchPosition(handlePositionReceive);
   }, []);
 
-  useEffect(() => {
-    const filtered = repositories.filter((repo) => repo.favorite);
-
-    document.title = `Você tem ${filtered.length} favoritos.`;
-  }, [repositories]);
-
-  function handleFavorite(repoId) {
-    const newRepositories = repositories.map((repo) => {
-      return repo.id === repoId ? { ...repo, favorite: !repo.favorite } : repo;
-    });
-    setRepositories(newRepositories);
+  function handlePositionReceive({ coords }) {
+    const { latitude, longitude } = coords;
+    setLocation({ latitude, longitude });
   }
 
   return (
-    <ul>
-      {repositories.map((repo) => (
-        <li key={repo.id}>
-          {repo.name}
-          {repo.favorite && <span> (Favorito)</span>}
-          <button onClick={() => handleFavorite(repo.id)}> Favoritar</button>
-        </li>
-      ))}
-    </ul>
+    <>
+      Latitude: {location.latitude} <br />
+      Longitude: {location.longitude}
+    </>
   );
 }
 
 export default App;
-
-// NÃO FUNCIONOU
-// useEffect(async () => {
-//   const response = await fetch(
-//     "https://api.github.com/users/ricardroberg/repos"
-//   );
-//   const data = await response.json();
-
-//   setRepositories(data);
-// }, []);
