@@ -1,1 +1,1 @@
-# Exemplo de mount, upodate e umount
+# Exemplo de mount, update e umount
